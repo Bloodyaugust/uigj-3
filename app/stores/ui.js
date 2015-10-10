@@ -1,18 +1,12 @@
 (function (ui) {
   var state = {
-    spawnTab: 'drones',
-    infoView: 'resources',
+    view: 'make-connection',
   },
   listeners = [];
 
   ui.update = function (data) {
-    if (data.type === 'spawn-tab-select') {
-      state.spawnTab = data.unit;
-      ui.emit();
-    }
-
-    if (data.type === 'info-view-select') {
-      state.infoView = data.view;
+    if (data.type === 'view-select') {
+      state.view = data.view;
       ui.emit();
     }
   };

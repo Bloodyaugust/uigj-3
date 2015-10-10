@@ -1,20 +1,114 @@
 @import "reset";
 @import "lib";
 
-$eggs: #FFC107;
-$food: #FF5722;
-$water: #2196F3;
+$background-color: #303030;
+$button-main-color: #D32F2F;
+$button-active-color: #B71C1C;
+$material-color: #424242;
+$header-color: #212121;
+$text-color: white;
 
 body {
+  background-color: $background-color;
+  color: $text-color;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
   width: 100%;
 
+  .button {
+    background-color: $button-main-color;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 40px;
+    line-height: 40px;
+    margin: 15px auto;
+    max-width: 150px;
+    text-align: center;
+    @include card(1);
+  }
+  .button:active {
+    background-color: $button-active-color;
+    @include card(2);
+  }
+
+  .card {
+    background-color: $material-color;
+    padding: 15px;
+    margin: 15px;
+  }
+  .card:hover {
+    @include card(1);
+  }
+  .card.active {
+    @include card(2);
+  }
+
   .hide {
     display: none;
   }
+}
+
+header {
+  background-color: $header-color;
+  color: $text-color;
+  font-size: 2rem;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 10%;
+  text-align: left;
+
+  nav {
+    float: right;
+    width: 25%;
+
+    .icon {
+      background-color: $material-color;
+      border-radius: 16px;
+      @include card(1);
+      cursor: pointer;
+      float: right;
+      height: 32px;
+      margin-left: 16px;
+      margin-top: 8px;
+    }
+    .icon:active {
+      border: solid white 2px;
+      @include card(2);
+    }
+    .icon.active {
+      border: solid white 2px;
+      @include card(3);
+    }
+  }
+}
+
+input {
+  background-color: $material-color;
+  border: none;
+  color: $text-color;
+  height: 30px;
+  margin: 15px;
+  width: calc(100% - 30px);
+}
+input:focus {
+  border-bottom: solid white 1px;
+  outline: 0;
+}
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color:    $text-color;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color:    $text-color;
+  opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color:    $text-color;
+  opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color:    $text-color;
 }
 
 section.main-content {
@@ -29,133 +123,9 @@ section.main-content {
   }
 }
 
-section.resources, section.units {
-  background-color: #4E342E;
-  color: white;
-  height: 64px;
-  line-height: 64px;
-  width: 100%;
-
-  div {
-    width: 33%;
-    float: left;
-  }
-
-  .eggs .amount {
-    color: $eggs;
-  }
-  .food .amount {
-    color: $food;
-  }
-  .water .amount {
-    color: $water;
-  }
-
-  .positive {
-    color: #4CAF50;
-  }
-
-  .upkeep-food {
-    color: $food;
-  }
-  .upkeep-water {
-    color: $water;
-  }
-  .upkeep-food, .upkeep-water {
-    cursor: help;
-  }
-}
-
-section.spawn-tabs {
-  height: 60px;
-  margin-top: 25px;
-
-  div {
-    cursor: pointer;
-    border: solid lighten(blue, 10%) 2px;
-    border-radius: 4px;
-    float: left;
-    width: calc(33.3% - 4px);
-  }
-  div:hover {
-    background-color: grey;
-    color: white;
-  }
-  div.active {
-    background-color: grey;
-    color: white;
-  }
-
-  > span {
-    display: block;
-  }
-}
-
-section.controls {
-  > div > span {
-    cursor: pointer;
-    border: solid lighten(blue, 10%) 2px;
-    border-radius: 4px;
-    float: left;
-    width: calc(33.3% - 4px);
-
-    div {
-      display: inline;
-    }
-    div.cost {
-      color: $eggs;
-      cursor: help;
-    }
-  }
-  > div > span:active {
-    background-color: grey;
-    color: white;
-  }
-}
-
-section.history {
-  border: solid grey 2px;
-  border-radius: 4px;
-  margin-top: 25px;
-  height: 200px;
-  overflow-y: scroll;
-  padding: 2%;
-  width: 96%;
-   span {
-     display: block;
-     text-align: left;
-   }
-}
-
-header {
-  background-color: #4CAF50;
-  color: white;
-  font-size: 2rem;
-  height: 50px;
-  line-height: 50px;
-  padding: 0 10%;
-  text-align: left;
-
-  nav {
-    float: right;
-    width: 25%;
-
-    .icon {
-      background-color: white;
-      border-radius: 16px;
-      @include card(2);
-      cursor: pointer;
-      float: right;
-      height: 32px;
-      margin-left: 16px;
-      margin-top: 8px;
-    }
-    .icon:active {
-      @include card(4);
-    }
-    .icon.active {
-      border: solid 2px $water;
-      @include card(5);
-    }
+section.player-config {
+  .player-data {
+    margin: 15px auto;
+    max-width: 300px;
   }
 }

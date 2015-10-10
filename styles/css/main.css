@@ -44,144 +44,55 @@ table {
   border-spacing: 0;
 }
 
-/* line 8, ../sass/main.scss */
+/* line 11, ../sass/main.scss */
 body {
+  background-color: #303030;
+  color: white;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
   width: 100%;
 }
-/* line 15, ../sass/main.scss */
+/* line 20, ../sass/main.scss */
+body .button {
+  background-color: #D32F2F;
+  border-radius: 4px;
+  cursor: pointer;
+  height: 40px;
+  line-height: 40px;
+  margin: 15px auto;
+  max-width: 150px;
+  text-align: center;
+  box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
+}
+/* line 31, ../sass/main.scss */
+body .button:active {
+  background-color: #B71C1C;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
+}
+/* line 36, ../sass/main.scss */
+body .card {
+  background-color: #424242;
+  padding: 15px;
+  margin: 15px;
+}
+/* line 41, ../sass/main.scss */
+body .card:hover {
+  box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
+}
+/* line 44, ../sass/main.scss */
+body .card.active {
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
+}
+/* line 48, ../sass/main.scss */
 body .hide {
   display: none;
 }
 
-/* line 20, ../sass/main.scss */
-section.main-content {
-  width: 80%;
-  margin: 0 10%;
-  text-align: center;
-}
-/* line 25, ../sass/main.scss */
-section.main-content .icon {
-  height: 32px;
-  margin-bottom: -8px;
-  width: 32px;
-}
-
-/* line 32, ../sass/main.scss */
-section.resources, section.units {
-  background-color: #4E342E;
-  color: white;
-  height: 64px;
-  line-height: 64px;
-  width: 100%;
-}
-/* line 39, ../sass/main.scss */
-section.resources div, section.units div {
-  width: 33%;
-  float: left;
-}
-/* line 44, ../sass/main.scss */
-section.resources .eggs .amount, section.units .eggs .amount {
-  color: #FFC107;
-}
-/* line 47, ../sass/main.scss */
-section.resources .food .amount, section.units .food .amount {
-  color: #FF5722;
-}
-/* line 50, ../sass/main.scss */
-section.resources .water .amount, section.units .water .amount {
-  color: #2196F3;
-}
-/* line 54, ../sass/main.scss */
-section.resources .positive, section.units .positive {
-  color: #4CAF50;
-}
-/* line 58, ../sass/main.scss */
-section.resources .upkeep-food, section.units .upkeep-food {
-  color: #FF5722;
-}
-/* line 61, ../sass/main.scss */
-section.resources .upkeep-water, section.units .upkeep-water {
-  color: #2196F3;
-}
-/* line 64, ../sass/main.scss */
-section.resources .upkeep-food, section.resources .upkeep-water, section.units .upkeep-food, section.units .upkeep-water {
-  cursor: help;
-}
-
-/* line 69, ../sass/main.scss */
-section.spawn-tabs {
-  height: 60px;
-  margin-top: 25px;
-}
-/* line 73, ../sass/main.scss */
-section.spawn-tabs div {
-  cursor: pointer;
-  border: solid #3333ff 2px;
-  border-radius: 4px;
-  float: left;
-  width: calc(33.3% - 4px);
-}
-/* line 80, ../sass/main.scss */
-section.spawn-tabs div:hover {
-  background-color: grey;
-  color: white;
-}
-/* line 84, ../sass/main.scss */
-section.spawn-tabs div.active {
-  background-color: grey;
-  color: white;
-}
-/* line 89, ../sass/main.scss */
-section.spawn-tabs > span {
-  display: block;
-}
-
-/* line 95, ../sass/main.scss */
-section.controls > div > span {
-  cursor: pointer;
-  border: solid #3333ff 2px;
-  border-radius: 4px;
-  float: left;
-  width: calc(33.3% - 4px);
-}
-/* line 102, ../sass/main.scss */
-section.controls > div > span div {
-  display: inline;
-}
-/* line 105, ../sass/main.scss */
-section.controls > div > span div.cost {
-  color: #FFC107;
-  cursor: help;
-}
-/* line 110, ../sass/main.scss */
-section.controls > div > span:active {
-  background-color: grey;
-  color: white;
-}
-
-/* line 116, ../sass/main.scss */
-section.history {
-  border: solid grey 2px;
-  border-radius: 4px;
-  margin-top: 25px;
-  height: 200px;
-  overflow-y: scroll;
-  padding: 2%;
-  width: 96%;
-}
-/* line 124, ../sass/main.scss */
-section.history span {
-  display: block;
-  text-align: left;
-}
-
-/* line 130, ../sass/main.scss */
+/* line 53, ../sass/main.scss */
 header {
-  background-color: #4CAF50;
+  background-color: #212121;
   color: white;
   font-size: 2rem;
   height: 50px;
@@ -189,28 +100,90 @@ header {
   padding: 0 10%;
   text-align: left;
 }
-/* line 139, ../sass/main.scss */
+/* line 62, ../sass/main.scss */
 header nav {
   float: right;
   width: 25%;
 }
-/* line 143, ../sass/main.scss */
+/* line 66, ../sass/main.scss */
 header nav .icon {
-  background-color: white;
+  background-color: #424242;
   border-radius: 16px;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
   cursor: pointer;
   float: right;
   height: 32px;
   margin-left: 16px;
   margin-top: 8px;
 }
-/* line 153, ../sass/main.scss */
+/* line 76, ../sass/main.scss */
 header nav .icon:active {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.22), 0 14px 56px rgba(0, 0, 0, 0.25);
+  border: solid white 2px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
 }
-/* line 156, ../sass/main.scss */
+/* line 80, ../sass/main.scss */
 header nav .icon.active {
-  border: solid 2px #2196F3;
-  box-shadow: 0 15px 24px rgba(0, 0, 0, 0.22), 0 19px 76px rgba(0, 0, 0, 0.3);
+  border: solid white 2px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.23), 0 10px 40px rgba(0, 0, 0, 0.19);
+}
+
+/* line 87, ../sass/main.scss */
+input {
+  background-color: #424242;
+  border: none;
+  color: white;
+  height: 30px;
+  margin: 15px;
+  width: calc(100% - 30px);
+}
+
+/* line 95, ../sass/main.scss */
+input:focus {
+  border-bottom: solid white 1px;
+  outline: 0;
+}
+
+/* line 99, ../sass/main.scss */
+::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: white;
+}
+
+/* line 102, ../sass/main.scss */
+:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: white;
+  opacity: 1;
+}
+
+/* line 106, ../sass/main.scss */
+::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: white;
+  opacity: 1;
+}
+
+/* line 110, ../sass/main.scss */
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: white;
+}
+
+/* line 114, ../sass/main.scss */
+section.main-content {
+  width: 80%;
+  margin: 0 10%;
+  text-align: center;
+}
+/* line 119, ../sass/main.scss */
+section.main-content .icon {
+  height: 32px;
+  margin-bottom: -8px;
+  width: 32px;
+}
+
+/* line 127, ../sass/main.scss */
+section.player-config .player-data {
+  margin: 15px auto;
+  max-width: 300px;
 }
