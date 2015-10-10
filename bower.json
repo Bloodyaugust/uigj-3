@@ -1,0 +1,27 @@
+{
+  "name": "ant-colony",
+  "version": "0.0.0",
+  "authors": [
+    "Bloodyaugust <greysonrichey@gmail.com>"
+  ],
+  "description": "A clicker-type game where you manage an ant colony.",
+  "main": "index.html",
+  "moduleType": [],
+  "keywords": [
+    "clicker",
+    "html5",
+    "game"
+  ],
+  "license": "MIT",
+  "homepage": "http://synsugarstudio.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4"
+  }
+}

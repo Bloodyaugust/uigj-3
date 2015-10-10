@@ -1,0 +1,161 @@
+@import "reset";
+@import "lib";
+
+$eggs: #FFC107;
+$food: #FF5722;
+$water: #2196F3;
+
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 100%;
+
+  .hide {
+    display: none;
+  }
+}
+
+section.main-content {
+  width: 80%;
+  margin: 0 10%;
+  text-align: center;
+
+  .icon {
+    height: 32px;
+    margin-bottom: -8px;
+    width: 32px;
+  }
+}
+
+section.resources, section.units {
+  background-color: #4E342E;
+  color: white;
+  height: 64px;
+  line-height: 64px;
+  width: 100%;
+
+  div {
+    width: 33%;
+    float: left;
+  }
+
+  .eggs .amount {
+    color: $eggs;
+  }
+  .food .amount {
+    color: $food;
+  }
+  .water .amount {
+    color: $water;
+  }
+
+  .positive {
+    color: #4CAF50;
+  }
+
+  .upkeep-food {
+    color: $food;
+  }
+  .upkeep-water {
+    color: $water;
+  }
+  .upkeep-food, .upkeep-water {
+    cursor: help;
+  }
+}
+
+section.spawn-tabs {
+  height: 60px;
+  margin-top: 25px;
+
+  div {
+    cursor: pointer;
+    border: solid lighten(blue, 10%) 2px;
+    border-radius: 4px;
+    float: left;
+    width: calc(33.3% - 4px);
+  }
+  div:hover {
+    background-color: grey;
+    color: white;
+  }
+  div.active {
+    background-color: grey;
+    color: white;
+  }
+
+  > span {
+    display: block;
+  }
+}
+
+section.controls {
+  > div > span {
+    cursor: pointer;
+    border: solid lighten(blue, 10%) 2px;
+    border-radius: 4px;
+    float: left;
+    width: calc(33.3% - 4px);
+
+    div {
+      display: inline;
+    }
+    div.cost {
+      color: $eggs;
+      cursor: help;
+    }
+  }
+  > div > span:active {
+    background-color: grey;
+    color: white;
+  }
+}
+
+section.history {
+  border: solid grey 2px;
+  border-radius: 4px;
+  margin-top: 25px;
+  height: 200px;
+  overflow-y: scroll;
+  padding: 2%;
+  width: 96%;
+   span {
+     display: block;
+     text-align: left;
+   }
+}
+
+header {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 2rem;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 10%;
+  text-align: left;
+
+  nav {
+    float: right;
+    width: 25%;
+
+    .icon {
+      background-color: white;
+      border-radius: 16px;
+      @include card(2);
+      cursor: pointer;
+      float: right;
+      height: 32px;
+      margin-left: 16px;
+      margin-top: 8px;
+    }
+    .icon:active {
+      @include card(4);
+    }
+    .icon.active {
+      border: solid 2px $water;
+      @include card(5);
+    }
+  }
+}
