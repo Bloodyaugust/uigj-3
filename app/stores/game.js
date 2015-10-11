@@ -5,12 +5,31 @@
   },
   listeners = [];
 
+  game.getWinState = function () {
+    return state.winState;
+  };
+
   game.update = function (data) {
     if (data.type === 'game-start') {
       state.day = 0;
       state.timeToNextDay = data.timeToNextDay;
 
-      players.emit();
+      console.log('Game start', state);
+
+      game.emit();
+    }
+
+    if (data.type === 'game-update') {
+      state = data.game;
+
+      game.emit();
+    }
+
+    if (data.type === 'game-end') {
+      state = data.game;
+      console.log('game ended ', state.winState);
+
+      game.emit();
     }
   };
 

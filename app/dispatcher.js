@@ -3,7 +3,6 @@
 
   dispatcher.dispatch = function (data) {
     if (!data.remote) {
-      console.log(data.type);
       for (var i = 0; i < listeners.length; i++) {
         listeners[i](data);
       }

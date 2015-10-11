@@ -44,7 +44,7 @@ table {
   border-spacing: 0;
 }
 
-/* line 11, ../sass/main.scss */
+/* line 12, ../sass/main.scss */
 body {
   background-color: #303030;
   color: white;
@@ -54,7 +54,7 @@ body {
   user-select: none;
   width: 100%;
 }
-/* line 20, ../sass/main.scss */
+/* line 21, ../sass/main.scss */
 body .button {
   background-color: #D32F2F;
   border-radius: 4px;
@@ -66,31 +66,36 @@ body .button {
   text-align: center;
   box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
 }
-/* line 31, ../sass/main.scss */
+/* line 32, ../sass/main.scss */
 body .button:active {
   background-color: #B71C1C;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
 }
-/* line 36, ../sass/main.scss */
+/* line 40, ../sass/main.scss */
 body .card {
   background-color: #424242;
+  border-radius: 4px;
   padding: 15px;
   margin: 15px;
 }
-/* line 41, ../sass/main.scss */
+/* line 46, ../sass/main.scss */
 body .card:hover {
   box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
 }
-/* line 44, ../sass/main.scss */
+/* line 49, ../sass/main.scss */
 body .card.active {
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
 }
-/* line 48, ../sass/main.scss */
+/* line 53, ../sass/main.scss */
 body .hide {
   display: none;
 }
+/* line 57, ../sass/main.scss */
+body .player.dead {
+  color: #D32F2F;
+}
 
-/* line 53, ../sass/main.scss */
+/* line 62, ../sass/main.scss */
 header {
   background-color: #212121;
   color: white;
@@ -100,12 +105,12 @@ header {
   padding: 0 10%;
   text-align: left;
 }
-/* line 62, ../sass/main.scss */
+/* line 71, ../sass/main.scss */
 header nav {
   float: right;
   width: 25%;
 }
-/* line 66, ../sass/main.scss */
+/* line 75, ../sass/main.scss */
 header nav .icon {
   background-color: #424242;
   border-radius: 16px;
@@ -116,18 +121,18 @@ header nav .icon {
   margin-left: 16px;
   margin-top: 8px;
 }
-/* line 76, ../sass/main.scss */
+/* line 85, ../sass/main.scss */
 header nav .icon:active {
   border: solid white 2px;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
 }
-/* line 80, ../sass/main.scss */
+/* line 89, ../sass/main.scss */
 header nav .icon.active {
   border: solid white 2px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.23), 0 10px 40px rgba(0, 0, 0, 0.19);
 }
 
-/* line 87, ../sass/main.scss */
+/* line 96, ../sass/main.scss */
 input {
   background-color: #424242;
   border: none;
@@ -137,59 +142,59 @@ input {
   width: calc(100% - 30px);
 }
 
-/* line 95, ../sass/main.scss */
+/* line 104, ../sass/main.scss */
 input:focus {
   border-bottom: solid white 1px;
   outline: 0;
 }
 
-/* line 99, ../sass/main.scss */
+/* line 108, ../sass/main.scss */
 ::-webkit-input-placeholder {
   /* WebKit, Blink, Edge */
   color: white;
 }
 
-/* line 102, ../sass/main.scss */
+/* line 111, ../sass/main.scss */
 :-moz-placeholder {
   /* Mozilla Firefox 4 to 18 */
   color: white;
   opacity: 1;
 }
 
-/* line 106, ../sass/main.scss */
+/* line 115, ../sass/main.scss */
 ::-moz-placeholder {
   /* Mozilla Firefox 19+ */
   color: white;
   opacity: 1;
 }
 
-/* line 110, ../sass/main.scss */
+/* line 119, ../sass/main.scss */
 :-ms-input-placeholder {
   /* Internet Explorer 10-11 */
   color: white;
 }
 
-/* line 114, ../sass/main.scss */
+/* line 123, ../sass/main.scss */
 section.main-content {
   width: 80%;
   margin: 0 10%;
   text-align: center;
 }
-/* line 119, ../sass/main.scss */
+/* line 128, ../sass/main.scss */
 section.main-content .icon {
   height: 32px;
   margin-bottom: -8px;
   width: 32px;
 }
 
-/* line 127, ../sass/main.scss */
+/* line 136, ../sass/main.scss */
 section.hosting .room-name {
   color: #D32F2F;
   display: block;
   font-size: 4rem;
 }
 
-/* line 135, ../sass/main.scss */
+/* line 144, ../sass/main.scss */
 section.player-config .player-data {
   margin: 15px auto;
   max-width: 300px;

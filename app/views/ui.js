@@ -7,15 +7,64 @@
     $playerConfig = $mainContainer.find('.player-config'),
     $playerNameInput = $playerConfig.find('input[name="name"]'),
     $playerCodeInput = $playerConfig.find('input[name="code"]'),
-    $gameStart = $mainContainer.find('.game-start');
+    $playerInfo = $mainContainer.find('.player-info'),
+    $gameInfo = $mainContainer.find('.game-info'),
+    $murderer = $gameInfo.find('.murderer'),
+    $civilian = $gameInfo.find('.civilian'),
+    $gameStart = $mainContainer.find('.game-start'),
+    $game = $mainContainer.find('.game'),
+    $gameDay = $game.find('.game-day'),
+    $gameTime = $game.find('.game-time'),
+    $gameEnd = $mainContainer.find('.game-end');
+
+  var lastView = '', lastDay = 0;
 
   ui.render = function (data) {
+    var clientName, clientType;
+
     $views.addClass('hide');
     $views.filter('.' + data.view).removeClass('hide');
 
     $roomName.html(data.room);
     if (data.room) {
       $findingRoom.addClass('hide');
+    }
+
+    if (data.view === 'hosting') {
+      $playerInfo.addClass('hide');
+    }
+
+    if (data.view === 'game-info') {
+      clientType = app.stores.client.getType();
+
+      $gameInfo.find('.player-type').html(clientType);
+      if (clientType === 'murderer') {
+        $murderer.removeClass('hide');
+        $civilian.addClass('hide');
+      }
+    }
+
+    if (data.view === 'game') {
+      $gameDay.html(data.day);
+      $gameTime.html(Math.floor(data.timeToNextDay / 1000));
+
+      if (data.day !== lastDay) {
+        $mainContainer.find('.murder').removeClass('disabled');
+        $mainContainer.find('.lynch').removeClass('disabled');
+        lastDay = data.day;
+      }
+    }
+
+    if (data.view === 'game-end') {
+      $gameEnd.html(app.stores.game.getWinState() + ' win! Reload the page to play again.');
+    }
+
+    if (lastView !== 'game-info' && data.view === 'game-info') {
+      if (app.stores.client.getType() !== 'host') {
+        app.views.players.renderControls();
+      } else {
+        $game.find('.players').removeClass('hide');
+      }
     }
   };
 

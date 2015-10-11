@@ -14,16 +14,12 @@
     <script src="app/stores/ui.js" defer></script>
     <script src="app/stores/client.js" defer></script>
     <script src="app/stores/players.js" defer></script>
+    <script src="app/stores/game.js" defer></script>
     <script src="app/views/ui.js" defer></script>
     <script src="app/views/players.js" defer></script>
   </head>
   <body>
-    <header>Mystikó
-      <nav>
-        <img src="res/img/massiveMultiplayer.png" alt="players" title="players" class="players-nav icon hide" data-view="players">
-        <img src="res/img/gamepad.png" alt="game" title="game" class="game icon active" data-view="game">
-      </nav>
-    </header>
+    <header>Mystikó</header>
     <section class="main-content">
       <section class="active card make-connection" data-view="make-connection">
         <div class="button host view-select" data-view="hosting">Host Game</div>
@@ -53,6 +49,29 @@
         <div class="active card players"></div>
         <span>Waiting for players...</span>
       </section>
+      <section class="game-info hide">
+        <section class="card active player-info">
+          <div class="player-description">
+            You are a <span class="player-type"></span>.Your goal is to <span class="murderer hide">kill all the civilians</span><span class="civilian">lynch all the murderers</span>.
+            Every day, you will vote with the rest of the players to lynch one person. Then, night will fall, and <span class="murderer hide">you will choose one person to kill</span><span class="civilian">some poor, unfortunate soul will be killed</span>.
+          </div>
+        </section>
+        <div class="card">The game will begin shortly, be prepared!</div>
+      </section>
+      <section class="game hide">
+        <div class="card game-state-info">
+          <div>Day: <span class="game-day">0</span></div>
+        </div>
+        <div class="card time-left">
+          Time to vote: <span class="game-time"></span> seconds
+        </div>
+        <div class="active card">
+          <h2>Players</h2>
+          <div class="players-controls"></div>
+          <div class="hide players"></div>
+        </div>
+      </section>
+      <section class="hide game-end"></section>
     </section>
   </body>
 </html>

@@ -4,6 +4,7 @@
 $background-color: #303030;
 $button-main-color: #D32F2F;
 $button-active-color: #B71C1C;
+$button-disabled-color: #212121;
 $material-color: #424242;
 $header-color: #212121;
 $text-color: white;
@@ -32,9 +33,13 @@ body {
     background-color: $button-active-color;
     @include card(2);
   }
+  .button.disabled {
+    $background-color: $button-disabled-color;
+  }
 
   .card {
     background-color: $material-color;
+    border-radius: 4px;
     padding: 15px;
     margin: 15px;
   }
@@ -47,6 +52,10 @@ body {
 
   .hide {
     display: none;
+  }
+
+  .player.dead {
+    color: $button-main-color;
   }
 }
 

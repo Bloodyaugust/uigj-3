@@ -24,10 +24,33 @@
     app.dispatcher.dispatch({
       type: 'player-join',
       player: {
-        name: playerName
+        name: playerName,
+        type: 'civilian',
+        state: 'alive'
       },
       room: room,
       remote: true,
+    });
+
+    app.dispatcher.dispatch({
+      type: 'client-name',
+      name: playerName
+    });
+  };
+
+  actions.playerLynch = function (playerName) {
+    app.dispatcher.dispatch({
+      type: 'player-lynch',
+      name: playerName,
+      remote: true
+    });
+  };
+
+  actions.playerMurder = function (playerName) {
+    app.dispatcher.dispatch({
+      type: 'player-murder',
+      name: playerName,
+      remote: true
     });
   };
 

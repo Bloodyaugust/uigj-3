@@ -4,9 +4,19 @@
   },
   listeners = [];
 
+  players.getPlayers = function () {
+    return state.players;
+  };
+
   players.update = function (data) {
     if (data.type === 'player-join') {
       state.players = data.players;
+
+      players.emit();
+    }
+
+    if (data.type === 'game-update') {
+      state.players = data.game.players;
 
       players.emit();
     }
