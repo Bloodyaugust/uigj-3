@@ -6,18 +6,21 @@
     <link rel="stylesheet" type="text/css" href="styles/css/main.css">
     <script src="//localhost:35729/livereload.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/socket.io-client/socket.io.js"></script>
     <script src="app/app.js" defer></script>
     <script src="app/constants.js" defer></script>
     <script src="app/dispatcher.js" defer></script>
     <script src="app/actions.js" defer></script>
     <script src="app/stores/ui.js" defer></script>
     <script src="app/stores/client.js" defer></script>
+    <script src="app/stores/players.js" defer></script>
     <script src="app/views/ui.js" defer></script>
+    <script src="app/views/players.js" defer></script>
   </head>
   <body>
     <header>Mystikó
       <nav>
-        <img src="res/img/massiveMultiplayer.png" alt="players" title="players" class="players icon hide" data-view="players">
+        <img src="res/img/massiveMultiplayer.png" alt="players" title="players" class="players-nav icon hide" data-view="players">
         <img src="res/img/gamepad.png" alt="game" title="game" class="game icon active" data-view="game">
       </nav>
     </header>
@@ -28,12 +31,27 @@
       </section>
       <section class="hosting hide">
         <div class="card finding-room">Getting you a new room code...</div>
+        <div class="card room">
+          Your Room Code
+          <span class="room-name"></span>
+        </div>
+        <h2>Players</h2>
+        <div class="card players"></div>
+        <div class="card game-start">
+          <div class="button">Start Game</div>
+        </div>
       </section>
       <section class="player-config hide">
         <div class="active card player-data">
           <input type="text" name="code" placeholder="Room Code" autofocus></input>
           <input type="text" name="name" placeholder="Name"></input>
+          <div class="button">Join</div>
         </div>
+      </section>
+      <section class="waiting-players hide">
+        <h2>Players</h2>
+        <div class="active card players"></div>
+        <span>Waiting for players...</span>
       </section>
     </section>
   </body>

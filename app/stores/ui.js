@@ -1,12 +1,30 @@
 (function (ui) {
   var state = {
     view: 'make-connection',
+    room: ''
   },
   listeners = [];
 
   ui.update = function (data) {
     if (data.type === 'view-select') {
       state.view = data.view;
+
+      if (state.view === 'hosting') {
+        app.actions.createRoom();
+      }
+
+      ui.emit();
+    }
+
+    if (data.type === 'new-room' && state.view === 'hosting') {
+      state.room = data.room;
+
+      ui.emit();
+    }
+
+    if (data.type === 'player-join' && state.view === 'player-config') {
+      state.view = 'waiting-players';
+
       ui.emit();
     }
   };

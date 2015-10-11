@@ -123,6 +123,14 @@ section.main-content {
   }
 }
 
+section.hosting {
+  .room-name {
+    color: $button-main-color;
+    display: block;
+    font-size: 4rem;
+  }
+}
+
 section.player-config {
   .player-data {
     margin: 15px auto;

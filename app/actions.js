@@ -12,4 +12,30 @@
       view: view
     });
   };
+
+  actions.createRoom = function () {
+    app.dispatcher.dispatch({
+      type: 'create-room',
+      remote: true
+    });
+  };
+
+  actions.playerJoin = function (room, playerName) {
+    app.dispatcher.dispatch({
+      type: 'player-join',
+      player: {
+        name: playerName
+      },
+      room: room,
+      remote: true,
+    });
+  };
+
+  actions.startGame = function () {
+    app.dispatcher.dispatch({
+      type: 'game-start',
+      room: '',
+      remote: true
+    });
+  };
 })(window.app.actions = {});

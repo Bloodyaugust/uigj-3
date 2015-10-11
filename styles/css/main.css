@@ -183,6 +183,13 @@ section.main-content .icon {
 }
 
 /* line 127, ../sass/main.scss */
+section.hosting .room-name {
+  color: #D32F2F;
+  display: block;
+  font-size: 4rem;
+}
+
+/* line 135, ../sass/main.scss */
 section.player-config .player-data {
   margin: 15px auto;
   max-width: 300px;
