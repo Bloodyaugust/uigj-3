@@ -34,7 +34,7 @@ body {
     @include card(2);
   }
   .button.disabled {
-    $background-color: $button-disabled-color;
+    background-color: $button-disabled-color;
   }
 
   .card {

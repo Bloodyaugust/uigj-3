@@ -46,8 +46,15 @@
       ui.emit();
     }
 
+    if (data.type === 'game-time') {
+      state.timeToNextDay = data.timeToNextDay;
+
+      ui.emit();
+    }
+
     if (data.type === 'game-end') {
       state.view = 'game-end';
+      state.winState = data.game.winState;
 
       ui.emit();
     }

@@ -134,6 +134,10 @@ function gameUpdate() {
   var civilians = 0;
 
   game.timeToNextDay = (1000 * 30) - (new Date().valueOf() - game.lastDay);
+  io.to(game.name).emit('', {
+    type: 'game-time',
+    timeToNextDay: game.timeToNextDay
+  });
 
   if (new Date().valueOf() - game.lastDay >= 1000 * 30) {
     game.day++;
@@ -183,7 +187,7 @@ function gameUpdate() {
       console.log('setting win state civilians');
       game.winState = 'civilians';
     }
-    if (civilians === 1 && murderers >= 1 && game.day > 1) {
+    if (civilians <= 1 && murderers >= 1 && game.day > 1) {
       console.log('setting win state murderers');
       game.winState = 'murderers';
     }

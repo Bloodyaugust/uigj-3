@@ -71,6 +71,10 @@ body .button:active {
   background-color: #B71C1C;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
 }
+/* line 36, ../sass/main.scss */
+body .button.disabled {
+  background-color: #212121;
+}
 /* line 40, ../sass/main.scss */
 body .card {
   background-color: #424242;

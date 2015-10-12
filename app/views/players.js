@@ -36,7 +36,7 @@
         $parent = $el.parent();
 
       if (!$el.hasClass('disabled')) {
-        $el.addClass('disabled');
+        $lynch.addClass('disabled');
         app.actions.playerLynch($parent.data().playerName);
       }
     });
@@ -46,7 +46,7 @@
       $parent = $el.parent();
 
       if (!$el.hasClass('disabled')) {
-        $el.addClass('disabled');
+        $murder.addClass('disabled');
         app.actions.playerMurder($parent.data().playerName);
       }
     });

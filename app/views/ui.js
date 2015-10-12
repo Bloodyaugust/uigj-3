@@ -56,7 +56,7 @@
     }
 
     if (data.view === 'game-end') {
-      $gameEnd.html(app.stores.game.getWinState() + ' win! Reload the page to play again.');
+      $gameEnd.html(data.winState + ' win! Reload the page to play again.');
     }
 
     if (lastView !== 'game-info' && data.view === 'game-info') {
