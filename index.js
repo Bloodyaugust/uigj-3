@@ -4,6 +4,24 @@ var io = require('socket.io')(http);
 
 var rooms = {};
 
+var constants = {
+  'GAME_STATE': {
+    'SETUP': 0,
+    'INTRO': 1,
+    'ROUND': 2,
+    'RECAP': 3,
+    'END': 4,
+  },
+  'WIN_STATE': {
+    'NONE': 0,
+    'CIVILIANS': 1,
+    'MURDERERS': 2,
+  },
+  'INTRO_LENGTH': 15 * 1000,
+  'DAY_LENGTH': 30 * 1000,
+  'UPDATE_INTERVAL': 16,
+};
+
 io.on('connection', function(socket){
   socket.on('', handleClientMessage.bind(socket));
   socket.emit('', {type: 'client-connect'});
@@ -18,20 +36,16 @@ function handleClientMessage(data) {
     game;
 
   if (data.type === 'create-room') {
-    var roomName = createRoom();
-    socket.join(roomName);
-    socket.gameRoom = roomName;
-    socket.emit('', {type: 'new-room', room: roomName});
+    var room = createRoom();
+    socket.join(room.name);
+    socket.gameRoom = room.name;
+    rooms[socket.gameRoom].intervalId = setInterval(gameUpdate.bind(rooms[socket.gameRoom]), constants['UPDATE_INTERVAL']);
   }
 
   if (data.type === 'player-join') {
     socket.join(data.room);
     socket.gameRoom = data.room;
     rooms[data.room].players.push(data.player);
-    io.to(data.room).emit('', {
-      type: 'player-join',
-      players: rooms[data.room].players
-    });
 
     console.log('player joined: ' + data.player.name + ' ' + data.room);
   }
@@ -42,11 +56,6 @@ function handleClientMessage(data) {
     for (i = 0; i < rooms[socket.gameRoom].players.length; i++) {
       console.log(rooms[socket.gameRoom].players[i].name);
     }
-    io.to(socket.gameRoom).emit('', {
-      type: 'game-start',
-      game: rooms[socket.gameRoom]
-    });
-    rooms[socket.gameRoom].intervalId = setInterval(gameUpdate.bind(rooms[socket.gameRoom]), 16);
   }
 
   if (data.type === 'player-lynch') {
@@ -88,14 +97,13 @@ function createRoom() {
 
   rooms[roomName] = {
       players: [],
-      day: 0,
-      timeStarted: new Date().valueOf(),
-      timeToNextDay: 1000 * 30,
-      lastDay: new Date().valueOf(),
+      state: constants['GAME_STATE']['SETUP'],
+      day: 1,
+      timeToNextDay: constants['DAY_LENGTH'],
       name: roomName,
       winState: 'none'
     };
-  return roomName;
+  return rooms[roomName];
 }
 
 function configurePlayers(roomName) {
@@ -114,14 +122,13 @@ function configurePlayers(roomName) {
     }
   }
 
-  game.timeToNextDay = 1000 * 10;
-  game.timeStarted = new Date().valueOf();
-  game.lastDay = new Date().valueOf();
+  for (var i = 0; i < players.length; i++) {
+    players.lynchVotes = 0;
+    players.murderVotes = 0;
+  }
 
-  io.to(roomName).emit('', {
-    type: 'players-configured',
-    players: players,
-  });
+  game.timeStarted = new Date().valueOf();
+  game.state = constants['GAME_STATE']['INTRO'];
 }
 
 function gameUpdate() {
@@ -133,79 +140,85 @@ function gameUpdate() {
   var murderers = 0;
   var civilians = 0;
 
-  game.timeToNextDay = (1000 * 30) - (new Date().valueOf() - game.lastDay);
-  io.to(game.name).emit('', {
-    type: 'game-time',
-    timeToNextDay: game.timeToNextDay
-  });
+  if (game.state === constants['GAME_STATE']['SETUP']) {
 
-  if (new Date().valueOf() - game.lastDay >= 1000 * 30) {
-    game.day++;
-    game.lastDay = new Date().valueOf();
-    game.timeToNextDay = 0;
-    console.log('New day: ' + game.name + ' ' + game.day);
+  }
 
-    if (game.winState === 'none') {
-      if (game.day !== 1) {
-        console.log('running kill logic');
-        for (var i = 0; i < game.players.length; i++) {
-          if (game.players[i].lynchVotes > mostLynchVotes) {
-            mostLynchVotes = game.players[i].lynchVotes;
-            lynchedPlayerIndex = i;
-            console.log('Player lynched ' + game.players[i].name);
-          }
-          if (game.players[i].murderVotes > mostMurderVotes) {
-            mostMurderVotes = game.players[i].murderVotes;
-            murderedPlayerIndex = i;
-            console.log('Player murdered ' + game.players[i].name);
-          }
+  if (game.state === constants['GAME_STATE']['INTRO']) {
+    if (new Date().valueOf() - game.timeStarted >= constants['INTRO_LENGTH']) {
+      game.state = constants['GAME_STATE']['ROUND'];
+    }
+  }
+
+  if (game.state === constants['GAME_STATE']['ROUND']) {
+    game.timeToNextDay -= constants['UPDATE_INTERVAL'];
+
+    if (game.timeToNextDay <= 0) {
+      game.timeToNextDay = constants['DAY_LENGTH'];
+      game.state = constants['GAME_STATE']['RECAP'];
+
+      for (var i = 0; i < game.players.length; i++) {
+        if (game.players[i].lynchVotes > mostLynchVotes) {
+          mostLynchVotes = game.players[i].lynchVotes;
+          lynchedPlayerIndex = i;
+        }
+        if (game.players[i].murderVotes > mostMurderVotes) {
+          mostMurderVotes = game.players[i].murderVotes;
+          murderedPlayerIndex = i;
         }
 
-        game.players[lynchedPlayerIndex].state = 'lynched';
-        game.players[murderedPlayerIndex].state = 'murdered';
-      }
-
-      for (i = 0; i < game.players.length; i++) {
         if (game.players[i].type === 'murderer' && game.players[i].state === 'alive') {
           murderers++;
-          console.log('Murderers: ' + murderers);
         }
         if (game.players[i].type === 'civilian' && game.players[i].state === 'alive') {
           civilians++;
-          console.log('civilians: ' + civilians);
         }
-
-        game.players[i].lynchVotes = 0;
-        game.players[i].murderVotes = 0;
       }
-    } else {
+
+      if (murderers === 0) {
+        console.log('setting win state civilians');
+        game.winState = constants['WIN_STATE']['CIVILIANS'];
+      }
+      if (civilians <= murderers) {
+        console.log('setting win state murderers');
+        game.winState = constants['WIN_STATE']['MURDERERS'];
+      }
+
+      console.log('civilians: ' + civilians);
+      console.log('Murderers: ' + murderers);
+
+      game.players[lynchedPlayerIndex].state = 'lynched';
+      console.log('Player lynched ' + game.players[lynchedPlayerIndex].name);
+      game.players[murderedPlayerIndex].state = 'murdered';
+      console.log('Player murdered ' + game.players[murderedPlayerIndex].name);
+    }
+  }
+
+  if (game.state === constants['GAME_STATE']['RECAP']) {
+    game.timeToEndRecap -= constants['UPDATE_INTERVAL'];
+
+    if (game.timeToEndRecap <= 0) {
+      game.timeToEndRecap = constants['RECAP_LENGTH'];
+
+      if (game.winState === constants['WIN_STATE']['NONE']) {
+        game.state = constants['GAME_STATE']['ROUND'];
+
+        for (i = 0; i < game.players.length; i++) {
+          game.players.lynchVotes = 0;
+          game.players.murderVotes = 0;
+        }
+      } else {
+        game.state = constants['GAME_STATE']['END'];
+      }
+    }
+  }
+
+  if (game.state === constants['GAME_STATE']['END']) {
 
   }
 
-  if (game.winState === 'none' && game.day > 0) {
-    if (murderers === 0 && game.day > 1) {
-      console.log('setting win state civilians');
-      game.winState = 'civilians';
-    }
-    if (civilians <= 1 && murderers >= 1 && game.day > 1) {
-      console.log('setting win state murderers');
-      game.winState = 'murderers';
-    }
-
-    if (game.winState === 'none') {
-      io.to(game.name).emit('', {
-        type: 'game-update',
-        game: game
-      });
-    } else {
-        clearInterval(game.intervalId);
-        io.to(game.name).emit('', {
-          type: 'game-end',
-          game: game
-        });
-
-        rooms[game.name] = null;
-      }
-    }
-  }
+  io.to(game.name).emit('', {
+    type: 'game',
+    game: game
+  });
 }
