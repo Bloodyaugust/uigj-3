@@ -4,6 +4,8 @@ var io = require('socket.io')(http);
 
 var rooms = {};
 
+var testMode = (process.argv[2] === 'test');
+
 var constants = {
   'GAME_STATE': {
     'SETUP': 0,
@@ -17,19 +19,78 @@ var constants = {
     'CIVILIANS': 1,
     'MURDERERS': 2,
   },
-  'INTRO_LENGTH': 15 * 1000,
-  'DAY_LENGTH': 30 * 1000,
+  'INTRO_LENGTH': testMode ? 1 * 1000 : 15 * 1000,
+  'RECAP_LENGTH': testMode ? 1 * 1000 : 10 * 1000,
+  'DAY_LENGTH': testMode ? 1 * 1000 : 30 * 1000,
   'UPDATE_INTERVAL': 16,
 };
 
-io.on('connection', function(socket){
-  socket.on('', handleClientMessage.bind(socket));
-  socket.emit('', {type: 'client-connect'});
-});
+if (!testMode) {
+  io.on('connection', function(socket){
+    socket.on('', handleClientMessage.bind(socket));
+    socket.emit('', {type: 'client-connect'});
+  });
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
-});
+  http.listen(3000, function(){
+    console.log('listening on *:3000');
+  });
+} else {
+  (function () {
+    var testRoom = createRoom(),
+      testRoomName = testRoom.name;
+
+    console.log('Running tests, starting game');
+
+    testRoom.intervalId = setInterval(gameUpdate.bind(testRoom), constants['UPDATE_INTERVAL']);
+
+    console.log('Adding test players');
+    for (var i = 0; i < 12; i++) {
+      handlePlayerJoin({
+        player: {
+          name: 'player' + i,
+          type: 'civilian',
+          state: 'alive',
+        },
+        room: testRoomName
+      });
+    }
+    if (testRoom.players.length === 12) {
+      console.log('SUCCESS: Found correct number of players');
+    } else {
+      console.log('ERROR: Found incorrect number of players');
+    }
+
+    console.log('Starting test game')
+    handleGameStart(testRoomName);
+    if (testRoom.state === constants['GAME_STATE']['INTRO']) {
+      console.log('SUCCESS: Game is in correct state INTRO');
+    } else {
+      console.log('ERROR: Game is in incorrect state ' + constants['GAME_STATE'][testRoom.state]);
+    }
+
+    setTimeout(function () {
+      if (testRoom.state === constants['GAME_STATE']['ROUND']) {
+        console.log('SUCCESS: Game is in correct state ROUND');
+      } else {
+        console.log('ERROR: Game is in incorrect state ' + constants['GAME_STATE'][testRoom.state]);
+      }
+    }, constants['INTRO_LENGTH'] + 500);
+    setTimeout(function () {
+      if (testRoom.state === constants['GAME_STATE']['RECAP']) {
+        console.log('SUCCESS: Game is in correct state RECAP');
+      } else {
+        console.log('ERROR: Game is in incorrect state ' + constants['GAME_STATE'][testRoom.state]);
+      }
+    }, constants['INTRO_LENGTH'] + constants['DAY_LENGTH'] + 500);
+    setTimeout(function () {
+      if (testRoom.state === constants['GAME_STATE']['ROUND']) {
+        console.log('SUCCESS: Game is in correct state ROUND');
+      } else {
+        console.log('ERROR: Game is in incorrect state ' + constants['GAME_STATE'][testRoom.state]);
+      }
+    }, constants['INTRO_LENGTH'] + constants['DAY_LENGTH'] + constants['RECAP_LENGTH'] + 500);
+  })();
+}
 
 function handleClientMessage(data) {
   var socket = this,
@@ -45,38 +106,56 @@ function handleClientMessage(data) {
   if (data.type === 'player-join') {
     socket.join(data.room);
     socket.gameRoom = data.room;
-    rooms[data.room].players.push(data.player);
-
-    console.log('player joined: ' + data.player.name + ' ' + data.room);
+    handlePlayerJoin(data);
   }
 
   if (data.type === 'game-start') {
-    configurePlayers(socket.gameRoom);
-    console.log('Starting new game with players: ');
-    for (i = 0; i < rooms[socket.gameRoom].players.length; i++) {
-      console.log(rooms[socket.gameRoom].players[i].name);
-    }
+    handleGameStart(socket.gameRoom);
   }
 
   if (data.type === 'player-lynch') {
-    game = rooms[socket.gameRoom];
-
-    for (var i = 0; i < game.players.length; i++) {
-      if (game.players[i].name === data.name) {
-        game.players[i].lynchVotes++;
-        break;
-      }
-    }
+    data.gameRoom = socket.gameRoom;
+    handlePlayerLynch(data);
   }
 
   if (data.type === 'player-murder') {
-    game = rooms[socket.gameRoom];
+    data.gameRoom = socket.gameRoom;
+    handlePlayerMurder(data);
+  }
+}
 
-    for (var i = 0; i < game.players.length; i++) {
-      if (game.players[i].name === data.name) {
-        game.players[i].murderVotes++;
-        break;
-      }
+function handlePlayerJoin(data) {
+  rooms[data.room].players.push(data.player);
+
+  console.log('player joined: ' + data.player.name + ' ' + data.room);
+}
+
+function handleGameStart(gameRoom) {
+  configurePlayers(gameRoom);
+  console.log('Starting new game with players: ');
+  for (var i = 0; i < rooms[gameRoom].players.length; i++) {
+    console.log(rooms[gameRoom].players[i].name);
+  }
+}
+
+function handlePlayerLynch(data) {
+  var game = rooms[data.gameRoom];
+
+  for (var i = 0; i < game.players.length; i++) {
+    if (game.players[i].name === data.name) {
+      game.players[i].lynchVotes++;
+      break;
+    }
+  }
+}
+
+function handlePlayerMurder(data) {
+  var game = rooms[data.gameRoom];
+
+  for (var i = 0; i < game.players.length; i++) {
+    if (game.players[i].name === data.name) {
+      game.players[i].murderVotes++;
+      break;
     }
   }
 }
@@ -100,8 +179,9 @@ function createRoom() {
       state: constants['GAME_STATE']['SETUP'],
       day: 1,
       timeToNextDay: constants['DAY_LENGTH'],
+      timeToEndRecap: constants['RECAP_LENGTH'],
       name: roomName,
-      winState: 'none'
+      winState: constants['WIN_STATE']['NONE'],
     };
   return rooms[roomName];
 }
@@ -123,8 +203,8 @@ function configurePlayers(roomName) {
   }
 
   for (var i = 0; i < players.length; i++) {
-    players.lynchVotes = 0;
-    players.murderVotes = 0;
+    players[i].lynchVotes = 0;
+    players[i].murderVotes = 0;
   }
 
   game.timeStarted = new Date().valueOf();
@@ -134,9 +214,9 @@ function configurePlayers(roomName) {
 function gameUpdate() {
   var game = this;
   var lynchedPlayerIndex = 0;
-  var mostLynchVotes = 0;
+  var mostLynchVotes = -1;
   var murderedPlayerIndex = 0;
-  var mostMurderVotes = 0;
+  var mostMurderVotes = -1;
   var murderers = 0;
   var civilians = 0;
 
@@ -158,15 +238,25 @@ function gameUpdate() {
       game.state = constants['GAME_STATE']['RECAP'];
 
       for (var i = 0; i < game.players.length; i++) {
-        if (game.players[i].lynchVotes > mostLynchVotes) {
+        if (game.players[i].lynchVotes > mostLynchVotes && game.players[i].state === 'alive') {
           mostLynchVotes = game.players[i].lynchVotes;
           lynchedPlayerIndex = i;
         }
-        if (game.players[i].murderVotes > mostMurderVotes) {
+      }
+      game.players[lynchedPlayerIndex].state = 'lynched';
+      console.log(game.players[lynchedPlayerIndex].name + ' lynched');
+
+      for (i = 0; i < game.players.length; i++) {
+        if (game.players[i].murderVotes > mostMurderVotes && game.players[i].state === 'alive') {
           mostMurderVotes = game.players[i].murderVotes;
           murderedPlayerIndex = i;
         }
+      }
+      game.players[murderedPlayerIndex].state = 'murdered';
+      console.log(game.players[murderedPlayerIndex].name + ' murdered');
 
+      for (i = 0; i < game.players.length; i++) {
+        console.log(game.players[i].name + ' state: ' + game.players[i].state);
         if (game.players[i].type === 'murderer' && game.players[i].state === 'alive') {
           murderers++;
         }
@@ -184,13 +274,9 @@ function gameUpdate() {
         game.winState = constants['WIN_STATE']['MURDERERS'];
       }
 
+      console.log('players: ' + game.players.length);
       console.log('civilians: ' + civilians);
       console.log('Murderers: ' + murderers);
-
-      game.players[lynchedPlayerIndex].state = 'lynched';
-      console.log('Player lynched ' + game.players[lynchedPlayerIndex].name);
-      game.players[murderedPlayerIndex].state = 'murdered';
-      console.log('Player murdered ' + game.players[murderedPlayerIndex].name);
     }
   }
 
@@ -217,8 +303,10 @@ function gameUpdate() {
 
   }
 
-  io.to(game.name).emit('', {
-    type: 'game',
-    game: game
-  });
+  if (!testMode) {
+    io.to(game.name).emit('', {
+      type: 'game',
+      game: game
+    });
+  }
 }
