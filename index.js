@@ -1,29 +1,11 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var constants = require('./app/constants.js');
 
 var rooms = {};
 
 var testMode = (process.argv[2] === 'test');
-
-var constants = {
-  'GAME_STATE': {
-    'SETUP': 0,
-    'INTRO': 1,
-    'ROUND': 2,
-    'RECAP': 3,
-    'END': 4,
-  },
-  'WIN_STATE': {
-    'NONE': 0,
-    'CIVILIANS': 1,
-    'MURDERERS': 2,
-  },
-  'INTRO_LENGTH': testMode ? 1 * 1000 : 15 * 1000,
-  'RECAP_LENGTH': testMode ? 1 * 1000 : 10 * 1000,
-  'DAY_LENGTH': testMode ? 1 * 1000 : 30 * 1000,
-  'UPDATE_INTERVAL': 16,
-};
 
 if (!testMode) {
   io.on('connection', function(socket){
@@ -35,6 +17,9 @@ if (!testMode) {
     console.log('listening on *:3000');
   });
 } else {
+  constants['INTRO_LENGTH'] = 1000;
+  constants['RECAP_LENGTH'] = 1000;
+  constants['DAY_LENGTH'] = 1000;
   (function () {
     var testRoom = createRoom(),
       testRoomName = testRoom.name;
@@ -300,7 +285,7 @@ function gameUpdate() {
   }
 
   if (game.state === constants['GAME_STATE']['END']) {
-
+    clearInterval(game.intervalId);
   }
 
   if (!testMode) {
