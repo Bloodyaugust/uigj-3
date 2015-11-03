@@ -19,7 +19,7 @@
 
   var lastView = '', lastDay = 0;
 
-  ui.render = function (data) {
+  ui.gameRender = function (data) {
     var clientName, clientType;
 
     $views.addClass('hide');
@@ -68,6 +68,10 @@
     }
   };
 
+  ui.clientRender = function (data) {
+
+  };
+
   $mainContainer.find('.view-select').on('click', function (e) {
     var $el = $(e.currentTarget);
 
@@ -82,5 +86,6 @@
     app.actions.startGame();
   });
 
-  app.stores.ui.register(ui.render);
+  app.stores.ui.register(ui.gameRender);
+  app.stores.client.register(ui.clientRender);
 })(window.app.views.ui = {});
