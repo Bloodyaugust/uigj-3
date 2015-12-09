@@ -1,15 +1,16 @@
 (function (client) {
   var state = {
-    roomState: app.constants['CLIENT_UNCONNECTED'],
+    roomState: app.constants['CLIENT']['CLIENT_UNCONNECTED'],
     room: '',
     clientName: '',
-    clientType: '',
+    clientType: app.constants['CLIENT']['CLIENT_NONE'],
+    view: app.constants['CLIENT']['VIEW']['INDEX'],
   },
   listeners = [];
 
   client.update = function (data) {
     if (data.type === 'client-connect') {
-      state.roomState = app.constants['CLIENT_CONNECTED'];
+      state.roomState = app.constants['CLIENT']['CLIENT_CONNECTED'];
       client.emit();
     }
 
@@ -18,9 +19,18 @@
       client.emit();
     }
 
+    if (data.type === 'view-select' && data.view === 'player-config') {
+      state.clientType = app.constants['CLIENT']['CLIENT_PLAYER'];
+      state.view = app.constants['CLIENT']['VIEW']['PLAYER_CONFIG'];
+      client.emit();
+    }
+
     if (data.type === 'view-select' && data.view === 'hosting') {
       state.clientName = 'host';
-      state.clientType = 'host';
+      state.clientType = app.constants['CLIENT']['CLIENT_HOST'];
+      state.view = app.constants['CLIENT']['VIEW']['HOST_CONFIG'];
+      app.actions.createRoom();
+      client.emit();
     }
 
     if (data.type === 'players-configured') {
@@ -53,6 +63,10 @@
 
   client.getType = function () {
     return state.clientType;
+  };
+
+  client.getState = function () {
+    return state;
   };
 
   app.dispatcher.register(client.update);

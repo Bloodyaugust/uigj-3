@@ -11,7 +11,7 @@
     <script src="app/constants.js" defer></script>
     <script src="app/dispatcher.js" defer></script>
     <script src="app/actions.js" defer></script>
-    <script src="app/stores/ui.js" defer></script>
+    <script src="app/stores/game.js" defer></script>
     <script src="app/stores/client.js" defer></script>
     <script src="app/views/ui.js" defer></script>
   </head>
@@ -24,7 +24,7 @@
       </section>
       <section class="hosting hide">
         <div class="card finding-room">Getting you a new room code...</div>
-        <div class="card room">
+        <div class="card room hide">
           Your Room Code
           <span class="room-name"></span>
         </div>
@@ -34,7 +34,10 @@
           <div class="button">Start Game</div>
         </div>
       </section>
-      <section class="host-recap">
+      <section class="host-intro hide">
+        <div class="active card">This shit is so cool, just play it and see.</div>
+      </section>
+      <section class="host-recap hide">
 
       </section>
       <section class="player-config hide">

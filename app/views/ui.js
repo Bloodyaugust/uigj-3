@@ -3,6 +3,7 @@
     $mainContainer = $body.find('.main-content'),
     $views = $mainContainer.children('section'),
     $findingRoom = $mainContainer.find('.finding-room'),
+    $roomNameContainer = $mainContainer.find('.card.room'),
     $roomName = $mainContainer.find('.card.room .room-name'),
     $playerConfig = $mainContainer.find('.player-config'),
     $playerNameInput = $playerConfig.find('input[name="name"]'),
@@ -17,64 +18,45 @@
     $gameTime = $game.find('.game-time'),
     $gameEnd = $mainContainer.find('.game-end');
 
-  var lastView = '', lastDay = 0;
-
   ui.gameRender = function (data) {
-    var clientName, clientType;
+    var clientState = app.stores.client.getState();
 
-    $views.addClass('hide');
-    $views.filter('.' + data.view).removeClass('hide');
-
-    $roomName.html(data.room);
-    if (data.room) {
+    if (clientState.view === app.constants['CLIENT']['VIEW']['HOST_CONFIG']) {
+      $roomNameContainer.removeClass('hide');
       $findingRoom.addClass('hide');
-    }
-
-    if (data.view === 'hosting') {
-      $playerInfo.addClass('hide');
-    }
-
-    if (data.view === 'game-info') {
-      clientType = app.stores.client.getType();
-
-      $gameInfo.find('.player-type').html(clientType);
-      if (clientType === 'murderer') {
-        $murderer.removeClass('hide');
-        $civilian.addClass('hide');
-      }
-    }
-
-    if (data.view === 'game') {
-      $gameDay.html(data.day);
-      $gameTime.html(Math.floor(data.timeToNextDay / 1000));
-
-      if (data.day !== lastDay) {
-        $mainContainer.find('.murder').removeClass('disabled');
-        $mainContainer.find('.lynch').removeClass('disabled');
-        lastDay = data.day;
-      }
-    }
-
-    if (data.view === 'game-end') {
-      $gameEnd.html(data.winState + ' win! Reload the page to play again.');
-    }
-
-    if (lastView !== 'game-info' && data.view === 'game-info') {
-      if (app.stores.client.getType() !== 'host') {
-        app.views.players.renderControls();
-      } else {
-        $game.find('.players').removeClass('hide');
-      }
+      $roomName.html(data.name);
     }
   };
 
   ui.clientRender = function (data) {
+    var gameState = app.stores.game.getState();
 
+    $views.addClass('hide');
+
+    if (data.clientType === app.constants['CLIENT']['CLIENT_HOST']) {
+      console.log('rendering host');
+      console.log(gameState);
+      if (data.view === app.constants['CLIENT']['VIEW']['HOST_CONFIG']) {
+        $views.filter('.hosting').removeClass('hide');
+      }
+      if (data.view === app.constants['CLIENT']['VIEW']['HOST_INTRO']) {
+        $views.filter('.host-intro').removeClass('hide');
+      }
+    } else if (data.clientType === app.constants['CLIENT']['CLIENT_PLAYER']) {
+      console.log('rendering player');
+      if (data.view === app.constants['CLIENT']['VIEW']['PLAYER_CONFIG']) {
+        $views.filter('.player-config').removeClass('hide');
+      }
+    } else {
+      console.log('rendering index');
+      $views.filter('.make-connection').removeClass('hide');
+    }
   };
 
   $mainContainer.find('.view-select').on('click', function (e) {
     var $el = $(e.currentTarget);
 
+    console.log($el.data().view);
     app.actions.viewSelect($el.data().view);
   });
 
@@ -86,6 +68,6 @@
     app.actions.startGame();
   });
 
-  app.stores.ui.register(ui.gameRender);
+  app.stores.game.register(ui.gameRender);
   app.stores.client.register(ui.clientRender);
 })(window.app.views.ui = {});
