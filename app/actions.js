@@ -28,7 +28,7 @@
         type: 'civilian',
         state: 'alive'
       },
-      room: room,
+      room: room.toLowerCase(),
       remote: true,
     });
 
@@ -36,6 +36,8 @@
       type: 'client-name',
       name: playerName
     });
+
+    actions.viewSelect('player-wait');
   };
 
   actions.playerLynch = function (playerName) {

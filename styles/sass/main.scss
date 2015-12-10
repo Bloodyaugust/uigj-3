@@ -144,5 +144,9 @@ section.player-config {
   .player-data {
     margin: 15px auto;
     max-width: 300px;
+
+    .lower {
+      text-transform: lowercase;
+    }
   }
 }
