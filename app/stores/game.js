@@ -6,6 +6,7 @@
     if (data.type === 'game') {
       state = data.game;
       game.emit();
+      console.log('Game update ', data);
     }
   };
 

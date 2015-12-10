@@ -85,6 +85,7 @@ function handleClientMessage(data) {
     var room = createRoom();
     socket.join(room.name);
     socket.gameRoom = room.name;
+
     rooms[socket.gameRoom].intervalId = setInterval(gameUpdate.bind(rooms[socket.gameRoom]), constants['UPDATE_INTERVAL']);
   }
 
@@ -111,12 +112,14 @@ function handleClientMessage(data) {
 
 function handlePlayerJoin(data) {
   rooms[data.room].players.push(data.player);
+  rooms[data.room].dirty = true;
 
   console.log('player joined: ' + data.player.name + ' ' + data.room);
 }
 
 function handleGameStart(gameRoom) {
   configurePlayers(gameRoom);
+  rooms[gameRoom].dirty = true;
   console.log('Starting new game with players: ');
   for (var i = 0; i < rooms[gameRoom].players.length; i++) {
     console.log(rooms[gameRoom].players[i].name);
@@ -129,6 +132,7 @@ function handlePlayerLynch(data) {
   for (var i = 0; i < game.players.length; i++) {
     if (game.players[i].name === data.name) {
       game.players[i].lynchVotes++;
+      game.dirty = true;
       break;
     }
   }
@@ -140,6 +144,7 @@ function handlePlayerMurder(data) {
   for (var i = 0; i < game.players.length; i++) {
     if (game.players[i].name === data.name) {
       game.players[i].murderVotes++;
+      game.dirty = true;
       break;
     }
   }
@@ -160,14 +165,17 @@ function createRoom() {
   }
 
   rooms[roomName] = {
-      players: [],
-      state: constants['GAME_STATE']['SETUP'],
-      day: 1,
-      timeToNextDay: constants['DAY_LENGTH'],
-      timeToEndRecap: constants['RECAP_LENGTH'],
-      name: roomName,
-      winState: constants['WIN_STATE']['NONE'],
-    };
+    players: [],
+    state: constants['GAME_STATE']['SETUP'],
+    day: 1,
+    dirty: true,
+    timeToNextDay: constants['DAY_LENGTH'],
+    timeToEndRecap: constants['RECAP_LENGTH'],
+    name: roomName,
+    winState: constants['WIN_STATE']['NONE'],
+  };
+
+  console.log('room created: ', roomName);
   return rooms[roomName];
 }
 
@@ -212,6 +220,7 @@ function gameUpdate() {
   if (game.state === constants['GAME_STATE']['INTRO']) {
     if (new Date().valueOf() - game.timeStarted >= constants['INTRO_LENGTH']) {
       game.state = constants['GAME_STATE']['ROUND'];
+      game.dirty = true;
     }
   }
 
@@ -262,6 +271,7 @@ function gameUpdate() {
       console.log('players: ' + game.players.length);
       console.log('civilians: ' + civilians);
       console.log('Murderers: ' + murderers);
+      game.dirty = true;
     }
   }
 
@@ -281,17 +291,21 @@ function gameUpdate() {
       } else {
         game.state = constants['GAME_STATE']['END'];
       }
+      game.dirty = true;
     }
   }
 
   if (game.state === constants['GAME_STATE']['END']) {
     clearInterval(game.intervalId);
+    game.dirty = true;
   }
 
-  if (!testMode) {
+  if (!testMode && game.dirty) {
     io.to(game.name).emit('', {
       type: 'game',
       game: game
     });
+
+    game.dirty = false;
   }
 }

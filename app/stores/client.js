@@ -45,6 +45,8 @@
     if (data.type === 'new-room') {
       room = data.room;
     }
+
+    console.log('Client update ', data);
   };
 
   client.register = function (callback) {

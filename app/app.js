@@ -5,6 +5,6 @@ window.app = {};
   app.socket = io('//:3000');
 
   window.setInterval(function () {
-    app.actions.heartbeat();
+    //app.actions.heartbeat();
   }, 1000);
 })(window.app);
