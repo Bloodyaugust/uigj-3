@@ -24,6 +24,10 @@
       state.view = app.constants['CLIENT']['VIEW']['PLAYER_CONFIG'];
       client.emit();
     }
+    if (data.type === 'view-select' && data.view === 'player-wait') {
+      state.view = app.constants['CLIENT']['VIEW']['PLAYER_WAIT'];
+      client.emit();
+    }
 
     if (data.type === 'view-select' && data.view === 'hosting') {
       state.clientName = 'host';

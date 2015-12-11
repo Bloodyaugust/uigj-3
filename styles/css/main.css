@@ -203,3 +203,7 @@ section.player-config .player-data {
   margin: 15px auto;
   max-width: 300px;
 }
+/* line 148, ../sass/main.scss */
+section.player-config .player-data .lower {
+  text-transform: lowercase;
+}

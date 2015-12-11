@@ -16,15 +16,34 @@
     $game = $mainContainer.find('.game'),
     $gameDay = $game.find('.game-day'),
     $gameTime = $game.find('.game-time'),
-    $gameEnd = $mainContainer.find('.game-end');
+    $gameEnd = $mainContainer.find('.game-end'),
+    $hostConfigPlayers = $mainContainer.find('.hosting .players'),
+    $waitingPlayerPlayers = $mainContainer.find('.waiting-players .players');
 
   ui.gameRender = function (data) {
-    var clientState = app.stores.client.getState();
+    var clientState = app.stores.client.getState(),
+      players = '';
 
     if (clientState.view === app.constants['CLIENT']['VIEW']['HOST_CONFIG']) {
       $roomNameContainer.removeClass('hide');
       $findingRoom.addClass('hide');
       $roomName.html(data.name);
+    }
+
+    if (clientState.clientType === app.constants['CLIENT']['CLIENT_HOST']) {
+      if (clientState.view === app.constants['CLIENT']['VIEW']['HOST_CONFIG']) {
+        if (data.players) {
+          for (var i = 0; i < data.players.length; i++) {
+            players += '<div class="player">' + data.players[i].name + '</div>';
+          }
+          $hostConfigPlayers.html(players);
+        }
+      }
+    } else if (clientState.clientType === app.constants['CLIENT']['CLIENT_PLAYER']) {
+      for (i = 0; i < data.players.length; i++) {
+        players += '<div class="player">' + data.players[i].name + '</div>';
+      }
+      $waitingPlayerPlayers.html(players);
     }
   };
 
@@ -46,6 +65,9 @@
       console.log('rendering player');
       if (data.view === app.constants['CLIENT']['VIEW']['PLAYER_CONFIG']) {
         $views.filter('.player-config').removeClass('hide');
+      }
+      if (data.view === app.constants['CLIENT']['VIEW']['PLAYER_WAIT']) {
+        $views.filter('.waiting-players').removeClass('hide');
       }
     } else {
       console.log('rendering index');
