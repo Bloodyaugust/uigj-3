@@ -85,6 +85,9 @@
   $playerConfig.find('.button').on('click', function (e) {
     app.actions.playerJoin($playerCodeInput.val(), $playerNameInput.val());
   });
+  $playerConfig.find('input[name="name"]').enterKey(function (e) {
+    app.actions.playerJoin($playerCodeInput.val(), $playerNameInput.val());
+  });
 
   $gameStart.on('click', function (e) {
     app.actions.startGame();
