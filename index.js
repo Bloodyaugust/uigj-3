@@ -1,3 +1,4 @@
+var express = require('express');
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -15,6 +16,14 @@ if (!testMode) {
 
   http.listen(3000, function(){
     console.log('listening on *:3000');
+  });
+
+  app.use(express.static('app'));
+  app.use(express.static('bower_components'));
+  app.use(express.static('res'));
+  app.use(express.static('styles'));
+  app.listen(80, function () {
+    console.log('Server started.')
   });
 } else {
   constants['INTRO_LENGTH'] = 1000;
